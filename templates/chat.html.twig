@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+<div class="container mx-auto mt-8">
+    <h1 class="text-4xl text-center text-gray-700">Chatbot par Hakim</h1>
+
+<div class="container mx-auto mt-8">
+    {{ form_start(form, {'attr': {'class': 'max-w-md mx-auto p-4 bg-white shadow-lg rounded-lg'}}) }}
+    
+    <div class="mb-4">
+        {{ form_row(form.prompt, {'attr': {'class': 'w-full py-2 px-3 border rounded'}}) }}
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+            Soumettre
+        </button>
+    </div>
+    {# Une div pour un retour vers l'accueil #}
+    <div class="text-center mt-4">
+        <a href="{{ path('app_home') }}" class="text-blue-500 hover:text-blue-700">Retour à l'accueil</a>
+    </div>
+
+    {{ form_end(form) }}
+
+    {% if answer is not empty %}
+        <p class="mt-4 text-center text-lg text-blue-700">Votre réponse :</p
+        <p class="mt-4 text-center text-lg text-gray-500">{{ answer }}</p>
+    {% endif %}
+</div>
+{% endblock %}
