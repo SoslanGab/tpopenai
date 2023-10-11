@@ -26,9 +26,13 @@
 
     {{ form_end(form) }}
 
+    {% for message in messages %}
+        <p class="mt-4 text-center text-lg text-gray-500">{{ messages.content }}</p>
+    {% endfor %}
     {% if answer is not empty %}
         <p class="mt-4 text-center text-lg text-blue-700">Votre réponse :</p
         <p class="mt-4 text-center text-lg text-gray-500">{{ answer }}</p>
     {% endif %}
+    
 </div>
 {% endblock %}

@@ -7,6 +7,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ChatGPTType;
+use App\Repository\MessageRepository;
 use App\Service\ChatGPTService;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,10 +17,10 @@ class RequestController extends AbstractController
     #[Route('/chat', name: 'chat_gpt',  methods: ['GET', 'POST'])]
     public function chat(
         Request $request,
-        ChatGPTService $chatGPTService
+        ChatGPTService $chatGPTService, MessageRepository $messageRepository
     ): Response { {
             $answer = null;
-
+            $messages = $messageRepository->findAll();
             $form = $this->createForm(ChatGPTType::class);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -29,6 +30,7 @@ class RequestController extends AbstractController
 
             return $this->render('chat.html.twig', [
                 'form' => $form->createView(),
+                'messages' => $messages,
                 'answer' => $answer,
             ]);
         }
@@ -45,7 +47,6 @@ class RequestController extends AbstractController
 
         // Récupérez le contenu de la réponse au format JSON
         $data = $response->toArray();
-
         return $this->render('request/index.html.twig', [
             'data' => $data,
             'controller_name' => 'RequestController',

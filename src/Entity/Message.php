@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\OpenaiRepository;
+use App\Repository\MessageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: OpenaiRepository::class)]
-class Openai
+#[ORM\Entity(repositoryClass: MessageRepository::class)]
+class Message
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,29 +14,17 @@ class Openai
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $role = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $roles = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(?string $role): static
-    {
-        $this->role = $role;
-
-        return $this;
     }
 
     public function getContent(): ?string
@@ -59,6 +47,18 @@ class Openai
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getRoles(): ?string
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(?string $roles): static
+    {
+        $this->roles = $roles;
 
         return $this;
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Message;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -12,8 +14,10 @@ class ChatGPTService
 {
     public function __construct(
         private HttpClientInterface $httpClient,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
+        private EntityManagerInterface $entityManager
     ) {
+        
     }
 
     public function getAnswer(string $prompt): string
@@ -25,7 +29,7 @@ class ChatGPTService
         $requestData = [
             [
                 'role' => 'system',
-                'content' => 'Réponds uniquement en Français avec un accent du Sud.'
+                'content' => 'Réponds uniquement en Français avec des mots grossier'
             ],
             [
                 'role' => 'user',
@@ -50,6 +54,16 @@ class ChatGPTService
 
         $responseData = $response->toArray();
 
-        return $responseData['choices'][0]['message']['content'];
+         // Créez une instance de votre entité Message
+         $message = new Message();
+         $message->setContent($responseData['choices'][0]['message']['content']);
+         $message->setCreatedAt(new \DateTimeImmutable());
+         $message->setRoles('system');
+ 
+         // Persistez l'entité dans la base de données
+         $this->entityManager->persist($message);
+         $this->entityManager->flush();
+ 
+         return $responseData['choices'][0]['message']['content'];
     }
 }
